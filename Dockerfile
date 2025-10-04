@@ -6,7 +6,7 @@ WORKDIR /home
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    curl git python3 python3-venv build-essential unzip \
+    curl git python3 python3-venv build-essential unzip netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
 # Python virtual environment + packages

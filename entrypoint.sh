@@ -16,9 +16,14 @@ EOF
 
 # ---- 3. Start Jupyter in /home/jup in background ----
 mkdir -p /home/jup
-/home/venv/bin/python -m jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --no-browser --notebook-dir=/home/jup &
+/home/venv/bin/python -m jupyter lab --no-browser --NotebookApp.token='' --ServerApp.disable_check_xsrf=True --allow-root &
 
-# ---- 4. Start Bun server ----
+# wait until port 8888 responds
+echo "Waiting for Jupyter to be ready..."
+while ! nc -z localhost 8888; do
+  sleep 0.5
+done
+
 cd /home/server
 bun install
 bun run start
