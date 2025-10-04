@@ -1,10 +1,6 @@
 import { KernelManager, ServerConnection } from "@jupyterlab/services";
 import type { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export class JupyterManager {
   private kernelManager: KernelManager;
   private kernel: IKernelConnection | null;
@@ -17,7 +13,11 @@ export class JupyterManager {
       wsUrl: jupyterUrl.replace(/^http/, "ws"),
     });
 
-    this.kernelManager = new KernelManager({ serverSettings });
+    this.kernelManager = new KernelManager({
+      serverSettings,
+      // @ts-ignore
+      validateMessage: false
+    });
     this.kernel = null;
   }
 
