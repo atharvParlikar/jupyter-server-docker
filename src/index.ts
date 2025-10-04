@@ -1,21 +1,23 @@
-import { Hono } from 'hono'
-import { JupyterManager } from './kernal'
-import path from "path";
-import fs from "fs";
+import express from 'express';
+import { JupyterManager } from './kernal.js';
+import * as path from "path";
+import * as fs from "fs";
 import { Storage } from "@google-cloud/storage";
 
 const storage = new Storage();
 
-const app = new Hono();
+const app = express();
 const PORT = 8000;
-
 const jupManager = new JupyterManager();
-await jupManager.startKernel();
 
-app.post("/execute", async (c) => {
-  const body = await c.req.json();
+app.use(express.json());
 
-  const { code }: { code: string } = body;
+app.post("/execute", async (req, res) => {
+  const { code }: { code: string } = req.body;
+
+  if (!jupManager.isKernelStarted()) {
+    await jupManager.startKernel();
+  }
 
   console.log(`running code: ${code}`);
 
@@ -23,13 +25,13 @@ app.post("/execute", async (c) => {
 
   console.log(`result: ${result}`);
 
-  return c.json({
+  res.json({
     result
   });
 });
 
-app.get('/upload/:fileName', async (c) => {
-  const { fileName } = c.req.param();
+app.get('/upload/:fileName', async (req, res) => {
+  const { fileName } = req.params;
 
   try {
     const absPath = path.resolve("../jup/" + fileName);
@@ -52,15 +54,13 @@ app.get('/upload/:fileName', async (c) => {
 
     const publicUrl = `https://storage.googleapis.com/agent-generated-assets/${destination}`;
     console.log(`[TOOL RESULT] uploadToGCS: Success - ${publicUrl}`);
-    return c.json({ publicUrl });
+    res.json({ publicUrl });
   } catch (err: any) {
     console.log(`[TOOL RESULT] uploadToGCS: Error - ${err.message}`);
-    c.status(500);
-    return c.json({ error: `Upload failed: ${err.message}` });
+    res.status(500).json({ error: `Upload failed: ${err.message}` });
   }
 });
 
-export default {
-  port: PORT,
-  fetch: app.fetch
-};
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

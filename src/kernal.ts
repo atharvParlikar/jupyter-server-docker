@@ -30,6 +30,10 @@ export class JupyterManager {
     });
   }
 
+  isKernelStarted() {
+    return !!this.kernel;
+  }
+
   async runCode(code: string) {
     if (!this.kernel) {
       throw new Error(
