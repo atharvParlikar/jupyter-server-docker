@@ -1,0 +1,26 @@
+{
+  "name": "data-agent",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.17.1",
+    "@jupyterlab/services": "^7.4.8",
+    "@langchain/langgraph": "^0.4.9",
+    "@langchain/openai": "^0.6.13",
+    "@types/ws": "^8.18.1",
+    "axios": "^1.12.2",
+    "hono": "^4.9.9",
+    "node-fetch": "^3.3.2",
+    "ws": "^8.18.3"
+  }
+}
