@@ -25,5 +25,5 @@ while ! nc -z localhost 8888; do
 done
 
 cd /home/server
-bun install
-bun run start
+mv index.js index.mjs
+node index.mjs

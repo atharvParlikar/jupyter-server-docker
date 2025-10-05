@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "build": "bun build src/index.ts --outdir dist --target node",
     "start": "bun ./src/index.ts"
   },
   "devDependencies": {
